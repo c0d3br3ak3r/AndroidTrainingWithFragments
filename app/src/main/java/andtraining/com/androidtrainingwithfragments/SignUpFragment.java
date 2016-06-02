@@ -1,12 +1,15 @@
 package andtraining.com.androidtrainingwithfragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 
 /**
@@ -27,8 +30,36 @@ public class SignUpFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_sign_up, container, false);
+        dbadapter = new AndroidTrainingAppDatabaseAdapter(rootView.getContext());
+        btnClickListeners(rootView);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false);
+        return rootView;
+    }
+
+    public static Button submit_btn;
+    private AndroidTrainingAppDatabaseAdapter dbadapter;
+
+    public void btnClickListeners(final View rootView) {
+        submit_btn = (Button) rootView.findViewById(R.id.button3);
+        submit_btn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent("andtrain.com.androidtraining.ResultActivity");
+                        intent.putExtra("FromPage", "SignUpPage");
+                        dbadapter.open();
+                        String username = ((EditText)rootView.findViewById(R.id.editText7)).getText().toString();
+                        String password = ((EditText)rootView.findViewById(R.id.editText6)).getText().toString();
+                        String name = ((EditText)rootView.findViewById(R.id.editText3)).getText().toString();
+                        String email = ((EditText)rootView.findViewById(R.id.editText4)).getText().toString();
+                        String phno = ((EditText)rootView.findViewById(R.id.editText5)).getText().toString();
+                        dbadapter.insertEntry(username,password,name,email,phno);
+                        dbadapter.close();
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 
     // TODO: Rename method, update argument and hook method into UI event

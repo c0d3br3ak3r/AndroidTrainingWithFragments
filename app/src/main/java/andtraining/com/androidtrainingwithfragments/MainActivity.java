@@ -1,12 +1,13 @@
 package andtraining.com.androidtrainingwithfragments;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-public class MainActivity extends FragmentActivity implements OnSwitchListenerCommInterface{
+public class MainActivity extends FragmentActivity implements LoginFragment.OnFragmentInteractionListener, SignUpFragment.OnFragmentInteractionListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,10 @@ public class MainActivity extends FragmentActivity implements OnSwitchListenerCo
         }
 
         onSwitchListeners();
+    }
+
+    public void onFragmentInteraction(Uri uri) {
+        //Doing nothing ?
     }
 
     public void onSwitchListeners() {

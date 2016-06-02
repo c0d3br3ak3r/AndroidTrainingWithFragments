@@ -1,12 +1,18 @@
 package andtraining.com.androidtrainingwithfragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
+
+import java.util.HashMap;
 
 
 /**
@@ -63,8 +69,39 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
+        dbadapter = new AndroidTrainingAppDatabaseAdapter(rootView.getContext()); //initializing database
+        buttonEventListeners(rootView);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        return rootView;
+    }
+
+    public static Button login_btn;
+    private static AndroidTrainingAppDatabaseAdapter dbadapter;
+
+    public void buttonEventListeners(final View rootView) {
+        login_btn = (Button)rootView.findViewById(R.id.button);
+        login_btn.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent("andtrain.com.androidtraining.ResultActivity");
+                        intent.putExtra("FromPage", "SignInPage");
+                        dbadapter.open();
+                        HashMap<String,String> hmap = dbadapter.getLoginCredentials(((EditText)rootView.findViewById(R.id.editText)).getText().toString(), ((EditText)rootView.findViewById(R.id.editText2)).getText().toString());
+                        dbadapter.close();
+                        if(hmap!=null) {
+                            intent.putExtra("valid","true");
+                            intent.putExtra("Name", hmap.get("name"));
+                            intent.putExtra("Email", hmap.get("email"));
+                            intent.putExtra("phno", hmap.get("phno"));
+                        } else {
+                            intent.putExtra("valid","false");
+                        }
+                        startActivity(intent);
+                    }
+                }
+        );
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -74,12 +111,10 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    OnSwitchListenerCommInterface comm;
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        comm = (OnSwitchListenerCommInterface) context;
+//        comm = (OnSwitchListenerCommInterface) context;
         
 //        if (context instanceof OnFragmentInteractionListener) {
 //            mListener = (OnFragmentInteractionListener) context;
